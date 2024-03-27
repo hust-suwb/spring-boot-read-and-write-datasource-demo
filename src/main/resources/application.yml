@@ -1,0 +1,12 @@
+app:
+  datasource:
+    master: # 唯一主库
+      jdbcUrl: jdbc:mysql://127.0.0.1:3306/test_repica?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8&allowMultiQueries=true
+      username: root
+      password: root
+
+    slave: # 多个从库
+      slave1:
+        jdbcUrl: jdbc:mysql://127.0.0.1:3306/test_repica?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2b8&allowMultiQueries=true
+        username: root
+        password: root
