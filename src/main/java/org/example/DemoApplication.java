@@ -6,6 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+/**
+ * @see: https://springdoc.cn/spring-boot-read-and-write-datasource/
+ */
 @SpringBootApplication
 @EnableAspectJAutoProxy
 @EnableConfigurationProperties(value = {MasterSlaveDataSourceProperties.class})
