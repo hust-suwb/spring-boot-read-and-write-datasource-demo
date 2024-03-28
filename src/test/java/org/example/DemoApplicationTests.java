@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.service.JdbcService;
+import org.example.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ public class DemoApplicationTests {
     private static final Logger log = LoggerFactory.getLogger(DemoApplicationTests.class);
 
     @Autowired
-    private JdbcService jdbcService;
+    private UserService userService;
 
     @Test
     public void test() throws Exception {

@@ -17,7 +17,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 public class MasterSlaveDataSourceConfiguration {
 
-    @Bean
+    @Bean(name = "masterSlaveDataSource")
     public DataSource dataSource(MasterSlaveDataSourceProperties properties) {
 
         MasterSlaveDataSource dataSource = new MasterSlaveDataSource();
