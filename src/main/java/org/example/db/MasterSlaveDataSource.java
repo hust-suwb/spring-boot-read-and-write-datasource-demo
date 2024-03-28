@@ -3,13 +3,14 @@ package org.example.db;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.example.db.helper.MasterSlaveDataSourceMarker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 public class MasterSlaveDataSource extends AbstractRoutingDataSource {
 
-    static final Logger log = LoggerFactory.getLogger(MasterSlaveDataSource.class);
+    private static final Logger log = LoggerFactory.getLogger(MasterSlaveDataSource.class);
 
     // 从库的 Key 列表
     private List<Object> slaveKeys;
@@ -47,6 +48,7 @@ public class MasterSlaveDataSource extends AbstractRoutingDataSource {
     public List<Object> getSlaveKeys() {
         return slaveKeys;
     }
+
     public void setSlaveKeys(List<Object> slaveKeys) {
         this.slaveKeys = slaveKeys;
     }

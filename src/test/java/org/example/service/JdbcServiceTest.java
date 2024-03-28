@@ -19,12 +19,12 @@ public class JdbcServiceTest {
     public void test() throws Exception {
 
         // 连续4次读
-        log.info("read={}", this.jdbcService.read());
-        log.info("read={}", this.jdbcService.read());
-        log.info("read={}", this.jdbcService.read());
-        log.info("read={}", this.jdbcService.read());
+        log.info("read={}", this.jdbcService.select());
+        log.info("read={}", this.jdbcService.select());
+        log.info("read={}", this.jdbcService.selectByMaster());
+        log.info("read={}", this.jdbcService.selectByMaster());
 
         // 写
-        log.info("write={}", this.jdbcService.write());
+        log.info("write={}", this.jdbcService.update());
     }
 }

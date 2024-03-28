@@ -1,8 +1,8 @@
 package org.example.service;
 
+import org.example.annotation.Master;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class JdbcService {
@@ -15,16 +15,19 @@ public class JdbcService {
     }
 
     // 只读
-    @Transactional(readOnly = true)
-    public String read () {
+    public String select () {
         return this.jdbcTemplate.queryForObject("SELECT `name` FROM `test` WHERE id = 1;", String.class);
     }
 
 
-    // 先写，再读
-    @Transactional
-    public String write () {
-        this.jdbcTemplate.update("UPDATE `test` SET `name` = ? WHERE id = 1;", "new name");
-        return this.read();
+    // 写
+    public int update () {
+        return this.jdbcTemplate.update("UPDATE `test` SET `name` = ? WHERE id = 1;", "new name");
+    }
+
+    // 主库 读
+    @Master
+    public String selectByMaster() {
+        return this.jdbcTemplate.queryForObject("SELECT `name` FROM `test` WHERE id = 1;", String.class);
     }
 }

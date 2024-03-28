@@ -19,13 +19,5 @@ public class DemoApplicationTests {
     @Test
     public void test() throws Exception {
 
-        // 连续4次读
-        log.info("read={}", this.jdbcService.read());
-        log.info("read={}", this.jdbcService.read());
-        log.info("read={}", this.jdbcService.read());
-        log.info("read={}", this.jdbcService.read());
-
-        // 写
-        log.info("write={}", this.jdbcService.write());
     }
 }

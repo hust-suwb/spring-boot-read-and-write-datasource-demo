@@ -1,4 +1,4 @@
-package org.example.db;
+package org.example.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.example.db.MasterSlaveDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

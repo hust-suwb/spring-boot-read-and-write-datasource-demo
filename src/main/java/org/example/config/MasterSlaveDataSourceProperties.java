@@ -1,4 +1,4 @@
-package org.example.db;
+package org.example.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConstructorBinding;

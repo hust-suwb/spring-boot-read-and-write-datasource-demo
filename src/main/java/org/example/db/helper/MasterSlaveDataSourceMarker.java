@@ -1,4 +1,4 @@
-package org.example.db;
+package org.example.db.helper;
 
 public class MasterSlaveDataSourceMarker {
 
