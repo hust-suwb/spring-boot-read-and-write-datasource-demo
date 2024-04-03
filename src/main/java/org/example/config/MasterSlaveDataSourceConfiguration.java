@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Configuration
 public class MasterSlaveDataSourceConfiguration {
@@ -24,6 +25,9 @@ public class MasterSlaveDataSourceConfiguration {
 
         // 从数据库
         Map<Object, Object> slaveDataSource = new HashMap<>();
+
+        // 从数据库 Key
+        dataSource.setAvailableSlaveKeys(new CopyOnWriteArrayList<>());
 
         for (Map.Entry<String,Properties> entry : properties.slave().entrySet()) {
 
