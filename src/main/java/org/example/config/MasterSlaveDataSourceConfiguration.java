@@ -1,18 +1,15 @@
 package org.example.config;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.example.db.MasterSlaveDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 @Configuration
 public class MasterSlaveDataSourceConfiguration {
@@ -28,9 +25,6 @@ public class MasterSlaveDataSourceConfiguration {
         // 从数据库
         Map<Object, Object> slaveDataSource = new HashMap<>();
 
-        // 从数据库 Key
-        dataSource.setSlaveKeys(new ArrayList<>());
-
         for (Map.Entry<String,Properties> entry : properties.slave().entrySet()) {
 
             if (slaveDataSource.containsKey(entry.getKey())) {
@@ -39,7 +33,7 @@ public class MasterSlaveDataSourceConfiguration {
 
             slaveDataSource.put(entry.getKey(), new HikariDataSource(new HikariConfig(entry.getValue())));
 
-            dataSource.getSlaveKeys().add(entry.getKey());
+            dataSource.getAvailableSlaveKeys().add(entry.getKey());
         }
 
         // 设置从库

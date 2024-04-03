@@ -1,6 +1,8 @@
 package org.example.db;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.example.db.helper.MasterSlaveDataSourceMarker;
@@ -12,8 +14,8 @@ public class MasterSlaveDataSource extends AbstractRoutingDataSource {
 
     private static final Logger log = LoggerFactory.getLogger(MasterSlaveDataSource.class);
 
-    // 从库的 Key 列表
-    private List<Object> slaveKeys;
+    // 可用的从库 Key 列表
+    private volatile List<Object> availableSlaveKeys = new CopyOnWriteArrayList<>();
 
     // 从库 key 列表的索引
     private AtomicInteger index = new AtomicInteger(0);
@@ -24,32 +26,41 @@ public class MasterSlaveDataSource extends AbstractRoutingDataSource {
         // 当前线程的主从标识
         Boolean master = MasterSlaveDataSourceMarker.get();
 
-        if (master == null || master || this.slaveKeys.isEmpty()) {
+        if (master == null || master) {
             // 主库，返回 null，使用默认数据源
             log.info("数据库路由：主库");
             return null;
         }
 
-        // 从库，从 slaveKeys 中选择一个 Key
-        int index = this.index.getAndIncrement() % this.slaveKeys.size();
+        if(!this.availableSlaveKeys.isEmpty()) {
+            // 从库，从 slaveKeys 中选择一个 Key
+            int index = this.index.getAndIncrement() % this.availableSlaveKeys.size();
 
-        if (this.index.get() > 9999999) {
-            this.index.set(0);
+            if (this.index.get() > 9999999) {
+                this.index.set(0);
+            }
+
+            Object key = availableSlaveKeys.get(index);
+            log.info("数据库路由：从库 = {}", key);
+            return key;
+        } else {
+            // 没有可用的从库，返回 null，使用默认数据源
+            log.info("数据库路由：没有可用的从库，使用默认数据源，即主库");
+            return null;
         }
-
-        Object key = slaveKeys.get(index);
-
-        log.info("数据库路由：从库 = {}", key);
-
-        return key;
     }
 
-
-    public List<Object> getSlaveKeys() {
-        return slaveKeys;
+    public void updateDataSourceStatus(Map<String, Boolean> dataSourceStatus) {
+        availableSlaveKeys.clear();
+        for (Map.Entry<String, Boolean> entry : dataSourceStatus.entrySet()) {
+            if (entry.getValue()) {
+                availableSlaveKeys.add(entry.getKey());
+            }
+        }
+        log.info("更新可用的从库数据源列表: {}", availableSlaveKeys);
     }
 
-    public void setSlaveKeys(List<Object> slaveKeys) {
-        this.slaveKeys = slaveKeys;
+    public List<Object> getAvailableSlaveKeys() {
+        return availableSlaveKeys;
     }
 }
