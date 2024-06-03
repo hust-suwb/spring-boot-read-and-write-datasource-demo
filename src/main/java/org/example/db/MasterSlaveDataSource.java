@@ -22,31 +22,40 @@ public class MasterSlaveDataSource extends AbstractRoutingDataSource {
     @Override
     protected Object determineCurrentLookupKey() {
 
-        // 当前线程的主从标识
-        Boolean master = MasterSlaveDataSourceMarker.get();
+        try {
+            // 当前线程的主从标识
+            Boolean master = MasterSlaveDataSourceMarker.get();
 
-        if (master == null || master) {
-            // 主库，返回 null，使用默认数据源
-            log.info("数据库路由：主库");
-            return null;
-        }
-
-        if(!this.availableSlaveKeys.isEmpty()) {
-            // 从库，从 slaveKeys 中选择一个 Key
-            int index = this.index.getAndIncrement() % this.availableSlaveKeys.size();
-
-            if (this.index.get() > 9999999) {
-                this.index.set(0);
+            if (master == null || master) {
+                // 主库，返回 null，使用默认数据源
+                log.info("数据库路由：主库");
+                return null;
             }
 
-            Object key = availableSlaveKeys.get(index);
-            log.info("数据库路由：从库 = {}", key);
-            return key;
-        } else {
-            // 没有可用的从库，返回 null，使用默认数据源
-            log.info("数据库路由：没有可用的从库，使用默认数据源，即主库");
-            return null;
+            if(!this.availableSlaveKeys.isEmpty()) {
+                // 从库，从 slaveKeys 中选择一个 Key
+                int index = this.index.getAndIncrement() % this.availableSlaveKeys.size();
+
+                if (this.index.get() > 9999999) {
+                    this.index.set(0);
+                }
+
+                Object key = availableSlaveKeys.get(index);
+                log.info("数据库路由：从库 = {}", key);
+                return key;
+            } else {
+                // 没有可用的从库，返回 null，使用默认数据源
+                log.info("数据库路由：没有可用的从库，使用默认数据源，即主库");
+                return null;
+            }
+        } catch(Exception e) {
+            log.error("determineCurrentLookupKey error", e);
+        } finally {
+            // 一定要清除当前线程的主从标识，否则如果上游使用不当可能会有线程安全问题
+            MasterSlaveDataSourceMarker.clean();
         }
+
+        return null;
     }
 
     public void updateDataSourceStatus(Map<String, Boolean> dataSourceStatus) {
